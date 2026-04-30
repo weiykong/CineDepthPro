@@ -1,6 +1,13 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+val keystorePropsFile = rootProject.file("keystore.properties")
+val keystoreProps = Properties().also { props ->
+    if (keystorePropsFile.exists()) props.load(keystorePropsFile.inputStream())
 }
 
 android {
@@ -20,6 +27,15 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystoreProps["storeFile"] as String)
+            storePassword = keystoreProps["storePassword"] as String
+            keyAlias = keystoreProps["keyAlias"] as String
+            keyPassword = keystoreProps["keyPassword"] as String
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -28,6 +44,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

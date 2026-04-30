@@ -4,4 +4,7 @@
 /.idea/
 /build/
 /captures/
+keystore.properties
+*.jks
+*.keystore
 
